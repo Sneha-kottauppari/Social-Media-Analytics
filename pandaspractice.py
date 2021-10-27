@@ -13,3 +13,5 @@ for index, row in df.iterrows():
     print(row)
     print("Name:", row["name"])
     print()
+dffromcsv=pd.read_csv("data\politicaldata.csv")
+print(dffromcsv)
