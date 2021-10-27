@@ -16,6 +16,7 @@ nltk.download('vader_lexicon', quiet=True)
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 import matplotlib.pyplot as plt; plt.rcdefaults()
 import numpy as np
+import re
 endChars = [ " ", "\n", "#", ".", ",", "?", "!", ":", ";", ")" ]
 
 '''
@@ -58,7 +59,6 @@ Returns: str
 def parseState(fromString):
     return
 
-
 '''
 findHashtags(message)
 #5 [Check6-1]
@@ -66,8 +66,9 @@ Parameters: str
 Returns: list of strs
 '''
 def findHashtags(message):
-    return
-
+    taglist= re.findall("#\w+",message)
+    # print("\n",taglist,"\n")
+    return taglist
 
 '''
 getRegionFromState(stateDf, state)
@@ -277,3 +278,4 @@ if __name__ == "__main__":
     ## Uncomment these for Week 3 ##
     """print("\n" + "#"*15 + " WEEK 3 OUTPUT " + "#" * 15 + "\n")
     test.runWeek3()"""
+    test.testFindHashtags()
