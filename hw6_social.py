@@ -30,6 +30,7 @@ def makeDataFrame(filename):
     return pd.read_csv(filename)
 
     
+    # return pd.read_csv(filename)
 
 
 '''
@@ -57,7 +58,7 @@ Returns: str
 '''
 def parsePosition(fromString):
     position = re.findall("\s\((.*?)\sfrom",fromString)
-    print(position[0],'\n')
+    # print(position[0],'\n')
     if len(position)>0:
         return position[0]
     else: 
@@ -137,7 +138,12 @@ Returns: str
 '''
 def findSentiment(classifier, message):
     score = classifier.polarity_scores(message)['compound']
-    return
+    if score < -0.1:
+        return "negative"
+    elif score > 0.1:
+        return "positive"
+    else:
+        return "neutral"
 
 
 '''
@@ -149,7 +155,6 @@ Returns: None
 def addSentimentColumn(data):
     classifier = SentimentIntensityAnalyzer()
     return
-
 
 '''
 getDataCountByState(data, colName, dataToCount)
@@ -315,6 +320,8 @@ if __name__ == "__main__":
     ## Uncomment these for Week 3 ##
     """print("\n" + "#"*15 + " WEEK 3 OUTPUT " + "#" * 15 + "\n")
     test.runWeek3()"""
+    # test.testAddColumns()
+    test.testFindSentiment()
     test.testAddColumns()
     # test.testParseName()
     # test.testParsePosition()
