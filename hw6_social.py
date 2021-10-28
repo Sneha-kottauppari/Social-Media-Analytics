@@ -26,7 +26,7 @@ Returns: dataframe
 '''
 def makeDataFrame(filename):
     
-    return
+    return pd.read_csv(filename)
 
 
 '''
@@ -99,7 +99,12 @@ Returns: str
 '''
 def findSentiment(classifier, message):
     score = classifier.polarity_scores(message)['compound']
-    return
+    if score < -0.1:
+        return "negative"
+    elif score > 0.1:
+        return "positive"
+    else:
+        return "neutral"
 
 
 '''
@@ -110,6 +115,11 @@ Returns: None
 '''
 def addSentimentColumn(data):
     classifier = SentimentIntensityAnalyzer()
+    sentiments=[]
+    for index,row in data.iterrows():
+        senti= findSentiment(classifier,row["text"])
+        sentiments.append(senti)
+    data["sentiment"]=sentiments
     return
 
 
@@ -277,3 +287,4 @@ if __name__ == "__main__":
     ## Uncomment these for Week 3 ##
     """print("\n" + "#"*15 + " WEEK 3 OUTPUT " + "#" * 15 + "\n")
     test.runWeek3()"""
+    test.testAddSentimentColumn()
