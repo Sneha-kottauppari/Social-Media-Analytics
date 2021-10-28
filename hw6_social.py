@@ -94,8 +94,9 @@ Parameters: dataframe ; str
 Returns: str
 '''
 def getRegionFromState(stateDf, state):
-    return
-
+    regionresult = stateDf.loc[stateDf['state'] == state, 'region']
+    
+    return regionresult.values[0]
 
 '''
 addColumns(data, stateDf)
@@ -104,6 +105,7 @@ Parameters: dataframe ; dataframe
 Returns: None
 '''
 def addColumns(data, stateDf):
+    
     return
 
 
