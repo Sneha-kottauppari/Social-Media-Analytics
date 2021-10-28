@@ -16,6 +16,7 @@ nltk.download('vader_lexicon', quiet=True)
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 import matplotlib.pyplot as plt; plt.rcdefaults()
 import numpy as np
+import re
 endChars = [ " ", "\n", "#", ".", ",", "?", "!", ":", ";", ")" ]
 
 '''
@@ -26,7 +27,7 @@ Returns: dataframe
 '''
 def makeDataFrame(filename):
     
-    return
+    return pd.read_csv(filename)
 
 
 '''
@@ -36,7 +37,12 @@ Parameters: str
 Returns: str
 '''
 def parseName(fromString):
-    return
+    name = re.findall("From:\s*(.*?)\s*\(", fromString) 
+    if len(name)>0:
+        return name[0]
+    else: 
+        return ''
+
 
 
 '''
@@ -46,7 +52,12 @@ Parameters: str
 Returns: str
 '''
 def parsePosition(fromString):
-    return
+    position = re.findall("\s\((.*?)\sfrom",fromString)
+    # print(position[0],'\n')
+    if len(position)>0:
+        return position[0]
+    else: 
+        return ''
 
 
 '''
@@ -56,7 +67,12 @@ Parameters: str
 Returns: str
 '''
 def parseState(fromString):
-    return
+    state = re.findall(".*from\s(.*?)\)",fromString)
+    if len(state)>0:
+        return state[0]
+    else: 
+        return ''
+
 
 
 '''
@@ -66,7 +82,9 @@ Parameters: str
 Returns: list of strs
 '''
 def findHashtags(message):
-    return
+    taglist= re.findall("#\w+",message)
+    return taglist
+
 
 
 '''
@@ -76,7 +94,9 @@ Parameters: dataframe ; str
 Returns: str
 '''
 def getRegionFromState(stateDf, state):
-    return
+    regionresult = stateDf.loc[stateDf['state'] == state, 'region']
+    
+    return regionresult.values[0]
 
 
 '''
@@ -86,6 +106,25 @@ Parameters: dataframe ; dataframe
 Returns: None
 '''
 def addColumns(data, stateDf):
+    names=[]
+    positions=[]
+    states=[]
+    regions=[]
+    hashtags=[]
+    for index,row in data.iterrows():
+        stringinrow = row["label"]
+        names.append(parseName(stringinrow))
+        positions.append(parsePosition(stringinrow))
+        stateinrow=parseState(stringinrow)
+        states.append(stateinrow)
+        regions.append(getRegionFromState(stateDf,stateinrow))
+        text=row["text"]
+        hashtags.append(findHashtags(text))
+    data["name"]=names
+    data['position']=positions
+    data['state']=states
+    data['region']=regions
+    data['hashtags']=hashtags
     return
 
 
@@ -277,3 +316,4 @@ if __name__ == "__main__":
     ## Uncomment these for Week 3 ##
     """print("\n" + "#"*15 + " WEEK 3 OUTPUT " + "#" * 15 + "\n")
     test.runWeek3()"""
+    test.testAddColumns()
