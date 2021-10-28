@@ -4,6 +4,7 @@ Name:Sneha.K
 Roll Number:2021501022
 """
 
+from pandas.core import indexing
 import hw6_social_tests as test
 
 project = "Social" # don't edit this
@@ -35,8 +36,15 @@ parseName(fromString)
 Parameters: str
 Returns: str
 '''
-def parseName(fromString):
-    return
+import re
+
+def parseName(fromString): 
+    name = re.findall("From:\s*(.*?)\s*\(", fromString) 
+    if len(name)>0:
+        return name[0]
+    else: 
+        return ''
+
 
 
 '''
@@ -46,8 +54,12 @@ Parameters: str
 Returns: str
 '''
 def parsePosition(fromString):
-    return
-
+    position = re.findall("\s\((.*?)\sfrom",fromString)
+    print(position[0],'\n')
+    if len(position)>0:
+        return position[0]
+    else: 
+        return ''
 
 '''
 parseState(fromString)
@@ -56,7 +68,11 @@ Parameters: str
 Returns: str
 '''
 def parseState(fromString):
-    return
+    state = re.findall(".*from\s(.*?)\)",fromString)
+    if len(state)>0:
+        return state[0]
+    else: 
+        return ''
 
 
 '''
@@ -65,8 +81,9 @@ findHashtags(message)
 Parameters: str
 Returns: list of strs
 '''
-def findHashtags(message):
-    return
+def findHashtags(message):    
+    taglist= re.findall("#\w+",message)
+    return taglist
 
 
 '''
@@ -77,8 +94,8 @@ Returns: str
 '''
 def getRegionFromState(stateDf, state):
     regionresult = stateDf.loc[stateDf['state'] == state, 'region']
+    
     return regionresult.values[0]
-
 
 '''
 addColumns(data, stateDf)
@@ -87,6 +104,7 @@ Parameters: dataframe ; dataframe
 Returns: None
 '''
 def addColumns(data, stateDf):
+    
     return
 
 
@@ -278,5 +296,7 @@ if __name__ == "__main__":
     ## Uncomment these for Week 3 ##
     """print("\n" + "#"*15 + " WEEK 3 OUTPUT " + "#" * 15 + "\n")
     test.runWeek3()"""
-    # test.testMakeDataFrame()
+    # test.testParseName()
+    # test.testParsePosition()
+    # test.testParseState()
     test.testGetRegionFromState()
