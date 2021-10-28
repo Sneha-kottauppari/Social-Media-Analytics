@@ -26,7 +26,7 @@ Returns: dataframe
 '''
 def makeDataFrame(filename):
     
-    return
+    return pd.read_csv(filename)
 
 
 '''
@@ -76,7 +76,8 @@ Parameters: dataframe ; str
 Returns: str
 '''
 def getRegionFromState(stateDf, state):
-    return
+    regionresult = stateDf.loc[stateDf['state'] == state, 'region']
+    return regionresult.values[0]
 
 
 '''
@@ -277,3 +278,5 @@ if __name__ == "__main__":
     ## Uncomment these for Week 3 ##
     """print("\n" + "#"*15 + " WEEK 3 OUTPUT " + "#" * 15 + "\n")
     test.runWeek3()"""
+    # test.testMakeDataFrame()
+    test.testGetRegionFromState()
