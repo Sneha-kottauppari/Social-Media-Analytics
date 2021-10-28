@@ -4,6 +4,7 @@ Name:Sneha.K
 Roll Number:2021501022
 """
 
+from pandas.core import indexing
 import hw6_social_tests as test
 
 project = "Social" # don't edit this
@@ -26,8 +27,10 @@ Parameters: str
 Returns: dataframe
 '''
 def makeDataFrame(filename):
-    
     return pd.read_csv(filename)
+
+    
+    # return pd.read_csv(filename)
 
 
 '''
@@ -36,7 +39,9 @@ parseName(fromString)
 Parameters: str
 Returns: str
 '''
-def parseName(fromString):
+import re
+
+def parseName(fromString): 
     name = re.findall("From:\s*(.*?)\s*\(", fromString) 
     if len(name)>0:
         return name[0]
@@ -59,7 +64,6 @@ def parsePosition(fromString):
     else: 
         return ''
 
-
 '''
 parseState(fromString)
 #4 [Check6-1]
@@ -73,8 +77,6 @@ def parseState(fromString):
     else: 
         return ''
 
-
-
 '''
 findHashtags(message)
 #5 [Check6-1]
@@ -83,9 +85,8 @@ Returns: list of strs
 '''
 def findHashtags(message):
     taglist= re.findall("#\w+",message)
+    # print("\n",taglist,"\n")
     return taglist
-
-
 
 '''
 getRegionFromState(stateDf, state)
@@ -95,8 +96,8 @@ Returns: str
 '''
 def getRegionFromState(stateDf, state):
     regionresult = stateDf.loc[stateDf['state'] == state, 'region']
+    
     return regionresult.values[0]
-
 
 '''
 addColumns(data, stateDf)
@@ -321,3 +322,7 @@ if __name__ == "__main__":
     test.runWeek3()"""
     # test.testAddColumns()
     test.testFindSentiment()
+    test.testAddColumns()
+    # test.testParseName()
+    # test.testParsePosition()
+    test.testParseState()
