@@ -19,7 +19,7 @@ import matplotlib.pyplot as plt; plt.rcdefaults()
 import numpy as np
 import re
 endChars = [ " ", "\n", "#", ".", ",", "?", "!", ":", ";", ")" ]
-
+df={}
 '''
 makeDataFrame(filename)
 #3 [Check6-1]
@@ -30,7 +30,6 @@ def makeDataFrame(filename):
     return pd.read_csv(filename)
 
     
-    # return pd.read_csv(filename)
 
 
 '''
@@ -154,7 +153,13 @@ Returns: None
 '''
 def addSentimentColumn(data):
     classifier = SentimentIntensityAnalyzer()
+    sentiments=[]
+    for index,row in data.iterrows():
+        senti= findSentiment(classifier,row["text"])
+        sentiments.append(senti)
+    data["sentiment"]=sentiments
     return
+
 
 '''
 getDataCountByState(data, colName, dataToCount)
@@ -163,7 +168,22 @@ Parameters: dataframe ; str ; str
 Returns: dict mapping strs to ints
 '''
 def getDataCountByState(data, colName, dataToCount):
-    return
+    dict_count={}
+    # print(data["state"])
+    if dataToCount=="" and colName=="":
+        for index,row in data.iterrows():
+            if row["state"] not in dict_count:
+                dict_count[row["state"]] = 1
+            else:
+                dict_count[row["state"]]+=1
+    else:
+        for index,row in data.iterrows():
+            if dataToCount == row[colName] :
+                if row["state"] not in dict_count:
+                    dict_count[row["state"]] = 1
+                else:
+                    dict_count[row["state"]]+=1
+    return dict_count
 
 
 '''
@@ -321,8 +341,11 @@ if __name__ == "__main__":
     """print("\n" + "#"*15 + " WEEK 3 OUTPUT " + "#" * 15 + "\n")
     test.runWeek3()"""
     # test.testAddColumns()
-    test.testFindSentiment()
-    test.testAddColumns()
     # test.testParseName()
     # test.testParsePosition()
-    test.testParseState()
+    # test.testParseState()
+    df = makeDataFrame("data/politicaldata.csv")
+    stateDf = makeDataFrame("data/statemappings.csv")
+    addColumns(df, stateDf)
+    addSentimentColumn(df)
+    test.testGetDataCountByState(df)
