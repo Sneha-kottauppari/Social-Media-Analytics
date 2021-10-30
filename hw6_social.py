@@ -167,6 +167,11 @@ Returns: None
 '''
 def addSentimentColumn(data):
     classifier = SentimentIntensityAnalyzer()
+    sentiments=[]
+    for index,row in data.iterrows():
+        senti= findSentiment(classifier,row["text"])
+        sentiments.append(senti)
+    data["sentiment"]=sentiments
     return
 
 '''
@@ -231,8 +236,21 @@ Parameters: dataframe ; str
 Returns: float
 '''
 def getHashtagSentiment(data, hashtag):
-    return
+    hashtag_list=[]
+    count=0
+    all_sentiments=[]
+    for index,row in data.iterrows():
+        # print(row["sentiment"])
+        hashtag_list=findHashtags(row["text"])
+        if hashtag in hashtag_list:
+            count+=1
+            hashtag_sentiment= row["sentiment"]
+            if hashtag_sentiment == "positive" : all_sentiments.append(1)
+            elif hashtag_sentiment == "negative" : all_sentiments.append(-1)
+            else : all_sentiments.append(0)
+    avg_hashtag_sentimeent= sum(all_sentiments)/count
 
+    return avg_hashtag_sentimeent
 
 ### PART 3 ###
 
@@ -358,4 +376,5 @@ if __name__ == "__main__":
     stateDf = makeDataFrame("data/statemappings.csv")
     addColumns(df, stateDf)
     addSentimentColumn(df)
-    test.testMostCommonHashtags(df)
+    # test.testMostCommonHashtags(df)
+    test.testGetHashtagSentiment(df)
