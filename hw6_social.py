@@ -29,8 +29,6 @@ Returns: dataframe
 def makeDataFrame(filename):
     return pd.read_csv(filename)
 
-    
-    # return pd.read_csv(filename)
 
 
 '''
@@ -154,6 +152,11 @@ Returns: None
 '''
 def addSentimentColumn(data):
     classifier = SentimentIntensityAnalyzer()
+    sentiments=[]
+    for index,row in data.iterrows():
+        senti= findSentiment(classifier,row["text"])
+        sentiments.append(senti)
+    data["sentiment"]=sentiments
     return
 
 '''
@@ -320,9 +323,4 @@ if __name__ == "__main__":
     ## Uncomment these for Week 3 ##
     """print("\n" + "#"*15 + " WEEK 3 OUTPUT " + "#" * 15 + "\n")
     test.runWeek3()"""
-    # test.testAddColumns()
-    test.testFindSentiment()
-    test.testAddColumns()
-    # test.testParseName()
-    # test.testParsePosition()
-    test.testParseState()
+    test.testAddSentimentColumn()
