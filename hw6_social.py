@@ -19,7 +19,7 @@ import matplotlib.pyplot as plt; plt.rcdefaults()
 import numpy as np
 import re
 endChars = [ " ", "\n", "#", ".", ",", "?", "!", ":", ";", ")" ]
-
+df={}
 '''
 makeDataFrame(filename)
 #3 [Check6-1]
@@ -29,6 +29,7 @@ Returns: dataframe
 def makeDataFrame(filename):
     return pd.read_csv(filename)
 
+    
 
 
 '''
@@ -159,6 +160,7 @@ def addSentimentColumn(data):
     data["sentiment"]=sentiments
     return
 
+
 '''
 getDataCountByState(data, colName, dataToCount)
 #3 [Check6-2]
@@ -166,7 +168,22 @@ Parameters: dataframe ; str ; str
 Returns: dict mapping strs to ints
 '''
 def getDataCountByState(data, colName, dataToCount):
-    return
+    dict_count={}
+    # print(data["state"])
+    if dataToCount=="" and colName=="":
+        for index,row in data.iterrows():
+            if row["state"] not in dict_count:
+                dict_count[row["state"]] = 1
+            else:
+                dict_count[row["state"]]+=1
+    else:
+        for index,row in data.iterrows():
+            if dataToCount == row[colName] :
+                if row["state"] not in dict_count:
+                    dict_count[row["state"]] = 1
+                else:
+                    dict_count[row["state"]]+=1
+    return dict_count
 
 
 '''
@@ -323,4 +340,12 @@ if __name__ == "__main__":
     ## Uncomment these for Week 3 ##
     """print("\n" + "#"*15 + " WEEK 3 OUTPUT " + "#" * 15 + "\n")
     test.runWeek3()"""
-    test.testAddSentimentColumn()
+    # test.testAddColumns()
+    # test.testParseName()
+    # test.testParsePosition()
+    # test.testParseState()
+    df = makeDataFrame("data/politicaldata.csv")
+    stateDf = makeDataFrame("data/statemappings.csv")
+    addColumns(df, stateDf)
+    addSentimentColumn(df)
+    test.testGetDataCountByState(df)
