@@ -216,6 +216,18 @@ Returns: None
 '''
 def graphStateCounts(stateCounts, title):
     import matplotlib.pyplot as plt
+    list_keys=[]
+    list_values=[]
+    for key in stateCounts:
+        list_keys.append(key)
+        list_values.append(stateCounts[key])
+    for index in range(len (list_values)):
+        plt.bar(list_keys[index],list_values[index]) 
+    plt.xticks (ticks=list (range(len(list_keys))),label=list_keys,rotation="vertical")
+    plt.title(title)
+    plt.xlabel("state")
+    plt.ylabel("Count")
+    plt.show()
     return
 
 
@@ -318,11 +330,11 @@ if __name__ == "__main__":
     test.runWeek2()"""
 
     ## Uncomment these for Week 3 ##
-    """print("\n" + "#"*15 + " WEEK 3 OUTPUT " + "#" * 15 + "\n")
-    test.runWeek3()"""
+    print("\n" + "#"*15 + " WEEK 3 OUTPUT " + "#" * 15 + "\n")
+    test.runWeek3()
     # test.testAddColumns()
-    test.testFindSentiment()
-    test.testAddColumns()
-    # test.testParseName()
+    # test.testFindSentiment()
+    # test.testAddColumns()
+    # # test.testParseName()
     # test.testParsePosition()
-    test.testParseState()
+    # test.testParseState()
