@@ -4,6 +4,7 @@ Name:Sneha.K
 Roll Number:2021501022
 """
 
+from pandas.core import indexing
 import hw6_social_tests as test
 
 project = "Social" # don't edit this
@@ -16,6 +17,7 @@ nltk.download('vader_lexicon', quiet=True)
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 import matplotlib.pyplot as plt; plt.rcdefaults()
 import numpy as np
+import re
 endChars = [ " ", "\n", "#", ".", ",", "?", "!", ":", ";", ")" ]
 
 '''
@@ -25,8 +27,8 @@ Parameters: str
 Returns: dataframe
 '''
 def makeDataFrame(filename):
-    
     return pd.read_csv(filename)
+
 
 
 '''
@@ -35,8 +37,15 @@ parseName(fromString)
 Parameters: str
 Returns: str
 '''
-def parseName(fromString):
-    return
+import re
+
+def parseName(fromString): 
+    name = re.findall("From:\s*(.*?)\s*\(", fromString) 
+    if len(name)>0:
+        return name[0]
+    else: 
+        return ''
+
 
 
 '''
@@ -46,8 +55,12 @@ Parameters: str
 Returns: str
 '''
 def parsePosition(fromString):
-    return
-
+    position = re.findall("\s\((.*?)\sfrom",fromString)
+    # print(position[0],'\n')
+    if len(position)>0:
+        return position[0]
+    else: 
+        return ''
 
 '''
 parseState(fromString)
@@ -56,8 +69,11 @@ Parameters: str
 Returns: str
 '''
 def parseState(fromString):
-    return
-
+    state = re.findall(".*from\s(.*?)\)",fromString)
+    if len(state)>0:
+        return state[0]
+    else: 
+        return ''
 
 '''
 findHashtags(message)
@@ -66,8 +82,9 @@ Parameters: str
 Returns: list of strs
 '''
 def findHashtags(message):
-    return
-
+    taglist= re.findall("#\w+",message)
+    # print("\n",taglist,"\n")
+    return taglist
 
 '''
 getRegionFromState(stateDf, state)
@@ -76,8 +93,9 @@ Parameters: dataframe ; str
 Returns: str
 '''
 def getRegionFromState(stateDf, state):
-    return
-
+    regionresult = stateDf.loc[stateDf['state'] == state, 'region']
+    
+    return regionresult.values[0]
 
 '''
 addColumns(data, stateDf)
@@ -86,6 +104,25 @@ Parameters: dataframe ; dataframe
 Returns: None
 '''
 def addColumns(data, stateDf):
+    names=[]
+    positions=[]
+    states=[]
+    regions=[]
+    hashtags=[]
+    for index,row in data.iterrows():
+        stringinrow = row["label"]
+        names.append(parseName(stringinrow))
+        positions.append(parsePosition(stringinrow))
+        stateinrow=parseState(stringinrow)
+        states.append(stateinrow)
+        regions.append(getRegionFromState(stateDf,stateinrow))
+        text=row["text"]
+        hashtags.append(findHashtags(text))
+    data["name"]=names
+    data['position']=positions
+    data['state']=states
+    data['region']=regions
+    data['hashtags']=hashtags
     return
 
 
@@ -121,7 +158,6 @@ def addSentimentColumn(data):
         sentiments.append(senti)
     data["sentiment"]=sentiments
     return
-
 
 '''
 getDataCountByState(data, colName, dataToCount)
