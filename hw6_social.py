@@ -83,9 +83,22 @@ Parameters: str
 Returns: list of strs
 '''
 def findHashtags(message):
-    taglist= re.findall("#\w+",message)
+    # taglist= re.findall("#\w+",message)
     # print("\n",taglist,"\n")
-    return taglist
+    tags=[]
+    msglst=message.split('#')
+    templst=[]
+    for each in msglst[1:]:
+        strn=""
+        for char in each:
+            if char in endChars:
+                break
+            strn=strn+char
+        strn="#"+strn
+        tags.append(strn)
+    return tags
+
+    # return taglist
 
 '''
 getRegionFromState(stateDf, state)
@@ -211,7 +224,15 @@ Parameters: dataframe
 Returns: dict mapping strs to ints
 '''
 def getHashtagRates(data):
-    return
+    dict_hashtags={}
+    for index,row in data.iterrows():
+        for each in row["hashtags"]:
+            if each not in dict_hashtags.keys():
+                dict_hashtags[each]=1
+            else:
+                dict_hashtags[each]+=1
+    print(len(dict_hashtags))
+    return dict_hashtags
 
 
 '''
@@ -349,12 +370,13 @@ if __name__ == "__main__":
     """print("\n" + "#"*15 + " WEEK 3 OUTPUT " + "#" * 15 + "\n")
     test.runWeek3()"""
     # test.testAddColumns()
-    # test.testParseName()
-    # test.testParsePosition()
+    # test.testFindSentiment()
+    # test.testAddColumns()
+    # # test.testParseName()
+    # # test.testParsePosition()
     # test.testParseState()
     df = makeDataFrame("data/politicaldata.csv")
     stateDf = makeDataFrame("data/statemappings.csv")
     addColumns(df, stateDf)
     addSentimentColumn(df)
-    # test.testGetDataCountByState(df)
-    test.testGetDataForRegion(df)
+    test.testGetHashtagRates(df)
