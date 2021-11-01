@@ -19,7 +19,7 @@ import matplotlib.pyplot as plt; plt.rcdefaults()
 import numpy as np
 import re
 endChars = [ " ", "\n", "#", ".", ",", "?", "!", ":", ";", ")" ]
-
+df={}
 '''
 makeDataFrame(filename)
 #3 [Check6-1]
@@ -30,7 +30,6 @@ def makeDataFrame(filename):
     return pd.read_csv(filename)
 
     
-    # return pd.read_csv(filename)
 
 
 '''
@@ -84,9 +83,22 @@ Parameters: str
 Returns: list of strs
 '''
 def findHashtags(message):
-    taglist= re.findall("#\w+",message)
+    # taglist= re.findall("#\w+",message)
     # print("\n",taglist,"\n")
-    return taglist
+    tags=[]
+    msglst=message.split('#')
+    templst=[]
+    for each in msglst[1:]:
+        strn=""
+        for char in each:
+            if char in endChars:
+                break
+            strn=strn+char
+        strn="#"+strn
+        tags.append(strn)
+    return tags
+
+    # return taglist
 
 '''
 getRegionFromState(stateDf, state)
@@ -154,7 +166,13 @@ Returns: None
 '''
 def addSentimentColumn(data):
     classifier = SentimentIntensityAnalyzer()
+    sentiments=[]
+    for index,row in data.iterrows():
+        senti= findSentiment(classifier,row["text"])
+        sentiments.append(senti)
+    data["sentiment"]=sentiments
     return
+
 
 '''
 getDataCountByState(data, colName, dataToCount)
@@ -163,7 +181,22 @@ Parameters: dataframe ; str ; str
 Returns: dict mapping strs to ints
 '''
 def getDataCountByState(data, colName, dataToCount):
-    return
+    dict_count={}
+    # print(data["state"])
+    if dataToCount=="" and colName=="":
+        for index,row in data.iterrows():
+            if row["state"] not in dict_count:
+                dict_count[row["state"]] = 1
+            else:
+                dict_count[row["state"]]+=1
+    else:
+        for index,row in data.iterrows():
+            if dataToCount == row[colName] :
+                if row["state"] not in dict_count:
+                    dict_count[row["state"]] = 1
+                else:
+                    dict_count[row["state"]]+=1
+    return dict_count
 
 
 '''
@@ -173,7 +206,15 @@ Parameters: dataframe ; str
 Returns: dict mapping strs to (dicts mapping strs to ints)
 '''
 def getDataForRegion(data, colName):
-    return
+    nested_dict={}
+    for index,row in data.iterrows():
+        nested_dict[row["region"]]={}
+    for index,row in data.iterrows():
+        if row[colName] not in nested_dict[row["region"]]:
+            nested_dict[row["region"]][row[colName]]=1
+        else:
+            nested_dict[row["region"]][row[colName]]+=1
+    return nested_dict
 
 
 '''
@@ -183,7 +224,16 @@ Parameters: dataframe
 Returns: dict mapping strs to ints
 '''
 def getHashtagRates(data):
-    return
+    dict_hashtags={}
+    for index,row in data.iterrows():
+        for each in row["hashtags"]:
+            if each not in dict_hashtags.keys():
+                dict_hashtags[each]=1
+            else:
+                dict_hashtags[each]+=1
+    # print(len(dict_hashtags))
+    # print(dict_hashtags)
+    return dict_hashtags
 
 
 '''
@@ -193,7 +243,13 @@ Parameters: dict mapping strs to ints ; int
 Returns: dict mapping strs to ints
 '''
 def mostCommonHashtags(hashtags, count):
-    return
+    common_hashtags={}
+    Most_common_hashtag={}
+    common_hashtags=sorted(hashtags.items(),key= lambda x:x[1],reverse=True)
+    for each in common_hashtags[0:count]:
+        Most_common_hashtag[each[0]]=each[1]
+    return Most_common_hashtag
+
 
 
 '''
@@ -203,8 +259,21 @@ Parameters: dataframe ; str
 Returns: float
 '''
 def getHashtagSentiment(data, hashtag):
-    return
+    hashtag_list=[]
+    count=0
+    all_sentiments=[]
+    for index,row in data.iterrows():
+        # print(row["sentiment"])
+        hashtag_list=findHashtags(row["text"])
+        if hashtag in hashtag_list:
+            count+=1
+            hashtag_sentiment= row["sentiment"]
+            if hashtag_sentiment == "positive" : all_sentiments.append(1)
+            elif hashtag_sentiment == "negative" : all_sentiments.append(-1)
+            else : all_sentiments.append(0)
+    avg_hashtag_sentimeent= sum(all_sentiments)/count
 
+    return avg_hashtag_sentimeent
 
 ### PART 3 ###
 
