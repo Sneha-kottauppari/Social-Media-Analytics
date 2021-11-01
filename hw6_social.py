@@ -193,7 +193,15 @@ Parameters: dataframe ; str
 Returns: dict mapping strs to (dicts mapping strs to ints)
 '''
 def getDataForRegion(data, colName):
-    return
+    nested_dict={}
+    for index,row in data.iterrows():
+        nested_dict[row["region"]]={}
+    for index,row in data.iterrows():
+        if row[colName] not in nested_dict[row["region"]]:
+            nested_dict[row["region"]][row[colName]]=1
+        else:
+            nested_dict[row["region"]][row[colName]]+=1
+    return nested_dict
 
 
 '''
@@ -348,4 +356,5 @@ if __name__ == "__main__":
     stateDf = makeDataFrame("data/statemappings.csv")
     addColumns(df, stateDf)
     addSentimentColumn(df)
-    test.testGetDataCountByState(df)
+    # test.testGetDataCountByState(df)
+    test.testGetDataForRegion(df)
