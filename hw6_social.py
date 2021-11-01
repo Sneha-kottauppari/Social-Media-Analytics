@@ -30,7 +30,6 @@ def makeDataFrame(filename):
     return pd.read_csv(filename)
 
     
-    # return pd.read_csv(filename)
 
 
 '''
@@ -88,7 +87,7 @@ def findHashtags(message):
     # print("\n",taglist,"\n")
     tags=[]
     msglst=message.split('#')
-    # templst=[]
+    templst=[]
     for each in msglst[1:]:
         strn=""
         for char in each:
@@ -174,6 +173,7 @@ def addSentimentColumn(data):
     data["sentiment"]=sentiments
     return
 
+
 '''
 getDataCountByState(data, colName, dataToCount)
 #3 [Check6-2]
@@ -181,7 +181,22 @@ Parameters: dataframe ; str ; str
 Returns: dict mapping strs to ints
 '''
 def getDataCountByState(data, colName, dataToCount):
-    return
+    dict_count={}
+    # print(data["state"])
+    if dataToCount=="" and colName=="":
+        for index,row in data.iterrows():
+            if row["state"] not in dict_count:
+                dict_count[row["state"]] = 1
+            else:
+                dict_count[row["state"]]+=1
+    else:
+        for index,row in data.iterrows():
+            if dataToCount == row[colName] :
+                if row["state"] not in dict_count:
+                    dict_count[row["state"]] = 1
+                else:
+                    dict_count[row["state"]]+=1
+    return dict_count
 
 
 '''
@@ -191,7 +206,15 @@ Parameters: dataframe ; str
 Returns: dict mapping strs to (dicts mapping strs to ints)
 '''
 def getDataForRegion(data, colName):
-    return
+    nested_dict={}
+    for index,row in data.iterrows():
+        nested_dict[row["region"]]={}
+    for index,row in data.iterrows():
+        if row[colName] not in nested_dict[row["region"]]:
+            nested_dict[row["region"]][row[colName]]=1
+        else:
+            nested_dict[row["region"]][row[colName]]+=1
+    return nested_dict
 
 
 '''
@@ -376,5 +399,4 @@ if __name__ == "__main__":
     stateDf = makeDataFrame("data/statemappings.csv")
     addColumns(df, stateDf)
     addSentimentColumn(df)
-    # test.testMostCommonHashtags(df)
-    test.testGetHashtagSentiment(df)
+    test.testGetHashtagRates(df)
