@@ -231,7 +231,8 @@ def getHashtagRates(data):
                 dict_hashtags[each]=1
             else:
                 dict_hashtags[each]+=1
-    print(len(dict_hashtags))
+    # print(len(dict_hashtags))
+    # print(dict_hashtags)
     return dict_hashtags
 
 
@@ -242,7 +243,13 @@ Parameters: dict mapping strs to ints ; int
 Returns: dict mapping strs to ints
 '''
 def mostCommonHashtags(hashtags, count):
-    return
+    common_hashtags={}
+    Most_common_hashtag={}
+    common_hashtags=sorted(hashtags.items(),key= lambda x:x[1],reverse=True)
+    for each in common_hashtags[0:count]:
+        Most_common_hashtag[each[0]]=each[1]
+    return Most_common_hashtag
+
 
 
 '''
