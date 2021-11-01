@@ -19,7 +19,7 @@ import matplotlib.pyplot as plt; plt.rcdefaults()
 import numpy as np
 import re
 endChars = [ " ", "\n", "#", ".", ",", "?", "!", ":", ";", ")" ]
-
+df={}
 '''
 makeDataFrame(filename)
 #3 [Check6-1]
@@ -30,7 +30,6 @@ def makeDataFrame(filename):
     return pd.read_csv(filename)
 
     
-    # return pd.read_csv(filename)
 
 
 '''
@@ -167,7 +166,13 @@ Returns: None
 '''
 def addSentimentColumn(data):
     classifier = SentimentIntensityAnalyzer()
+    sentiments=[]
+    for index,row in data.iterrows():
+        senti= findSentiment(classifier,row["text"])
+        sentiments.append(senti)
+    data["sentiment"]=sentiments
     return
+
 
 '''
 getDataCountByState(data, colName, dataToCount)
@@ -176,7 +181,22 @@ Parameters: dataframe ; str ; str
 Returns: dict mapping strs to ints
 '''
 def getDataCountByState(data, colName, dataToCount):
-    return
+    dict_count={}
+    # print(data["state"])
+    if dataToCount=="" and colName=="":
+        for index,row in data.iterrows():
+            if row["state"] not in dict_count:
+                dict_count[row["state"]] = 1
+            else:
+                dict_count[row["state"]]+=1
+    else:
+        for index,row in data.iterrows():
+            if dataToCount == row[colName] :
+                if row["state"] not in dict_count:
+                    dict_count[row["state"]] = 1
+                else:
+                    dict_count[row["state"]]+=1
+    return dict_count
 
 
 '''
@@ -186,7 +206,15 @@ Parameters: dataframe ; str
 Returns: dict mapping strs to (dicts mapping strs to ints)
 '''
 def getDataForRegion(data, colName):
-    return
+    nested_dict={}
+    for index,row in data.iterrows():
+        nested_dict[row["region"]]={}
+    for index,row in data.iterrows():
+        if row[colName] not in nested_dict[row["region"]]:
+            nested_dict[row["region"]][row[colName]]=1
+        else:
+            nested_dict[row["region"]][row[colName]]+=1
+    return nested_dict
 
 
 '''
