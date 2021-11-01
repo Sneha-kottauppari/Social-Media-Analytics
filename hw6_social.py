@@ -87,7 +87,7 @@ def findHashtags(message):
     # print("\n",taglist,"\n")
     tags=[]
     msglst=message.split('#')
-    # templst=[]
+    templst=[]
     for each in msglst[1:]:
         strn=""
         for char in each:
@@ -386,4 +386,4 @@ if __name__ == "__main__":
     stateDf = makeDataFrame("data/statemappings.csv")
     addColumns(df, stateDf)
     addSentimentColumn(df)
-    test.testMostCommonHashtags(df)
+    test.testGetHashtagRates(df)
